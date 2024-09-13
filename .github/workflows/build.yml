@@ -70,8 +70,8 @@ jobs:
             echo "Remove the previous container..."
             sudo docker rm container_name || true
             
-            echo "Logging in to ECR...."                                    
-            aws ecr get-login-password --region us-west-1 | docker login --username AWS --password-stdin 445567104363.dkr.ecr.us-west-1.amazonaws.com/wd-app            
+            echo "Logging in to ECR...."                                                
+            sudo docker login -u AWS -p $(aws ecr get-login-password --region us-west-1) 445567104363.dkr.ecr.us-west-1.amazonaws.com/wd-app
             echo "Logged in successful..."
         
             
