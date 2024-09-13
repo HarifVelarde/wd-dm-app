@@ -67,6 +67,7 @@ jobs:
             aws ecr get-login-password --region $AWS_REGION | sudo docker login --username AWS --password-stdin 817722091681.dkr.ecr.af-south-1.amazonaws.com
             echo "Logged in successful..."
             echo "Pulling  image from ECR..."
+            echo $($ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG)
             echo "Docker pull command: sudo docker pull \"${{ secrets.AWS_REGISTRY_URL }}/${{ secrets.REPOSITORY_NAME }}:${{ env.TAG }}\""
             echo "Docker pull completed..."
         
