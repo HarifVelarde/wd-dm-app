@@ -52,15 +52,8 @@ jobs:
             AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
             AWS_REGION=af-south-1
           script: |
-            sudo su
-            
-            echo "AWS CLI version: $(aws --version)"
-            echo "Docker version: $(docker --version)"
-            
-            echo "Stop the current running container if exist..."
-            docker stop $(docker ps -a -q) || true
-            
-            echo "Remove the previous container..."
+            sudo su            
+            docker stop $(docker ps -a -q)            
             docker rm $(docker ps -a -q)
             
             echo "AWS credentials set...."
