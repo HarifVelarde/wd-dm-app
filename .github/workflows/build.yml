@@ -49,6 +49,7 @@ jobs:
             AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
             AWS_REGION=us-west-1
           script: |
+            sudo su
             echo "AWS CLI version: $(aws --version)"
             echo "Docker version: $(docker --version)"
             
