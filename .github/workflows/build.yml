@@ -70,7 +70,8 @@ jobs:
             
             echo "Logging in to ECR...."
             aws configure            
-            aws ecr get-login-password --region us-west-1 | docker login --username AWS --password-stdin 445567104363.dkr.ecr.us-west-1.amazonaws.com/wd-app
+            aws ecr get-login-password --region us-west-1 | docker login --username AWS --password-stdin 445567104363.dkr.ecr.us-west-1.amazonaws.com            
+
             echo "Logged in successful..."
         
             
