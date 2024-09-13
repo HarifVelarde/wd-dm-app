@@ -51,11 +51,10 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{secrets.AWS_REGION}}
           TAG: ${{env.TAG}}
-          SCRIPT_AFTER: |
-            ./script
+          SCRIPT_AFTER: |            
             echo "AWS CLI version: $(aws --version)"
             echo "Docker version: $(sudo docker --version)"
-            echo "Stop the current running container if exist..."
+            echo "Stop the current running container if exist...${TAG}"
             
       
         
