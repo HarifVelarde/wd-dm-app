@@ -35,46 +35,12 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.REPO_NAME }}
-          IMAGE_TAG: ${{ steps.get-commit-hash.outputs.commit-hash }}-${{ steps.get-timestamp.outputs.timestamp }}
+          #IMAGE_TAG: ${{ steps.get-commit-hash.outputs.commit-hash }}-${{ steps.get-timestamp.outputs.timestamp }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$TAG
 
-      - name: SSH into EC2 instance and deploy
-        uses: easingthemes/ssh-deploy@v5.0.0
-        with:
-          REMOTE_HOST: ${{ secrets.EC2_HOST }}
-          REMOTE_USER: ${{ secrets.EC2_USER }}
-          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          IMAGE_TAG: ${{ steps.get-commit-hash.outputs.commit-hash }}-${{ steps.get-timestamp.outputs.timestamp }}
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.REPO_NAME }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{secrets.AWS_REGION}}
-          SCRIPT_AFTER: |
-            ./script
-            echo "AWS CLI version: $(aws --version)"
-            echo "Docker version: $(sudo docker --version)"
-            echo "Stop the current running container if exist..."
-            sudo docker stop $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG || true
-            echo "Remove the previous container..."
-            sudo docker rm $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG || true
-            echo "AWS credentials set...."
-            export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-            export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-            export AWS_REGION=${AWS_REGION}
-            export ECR_REGISTRY=${ECR_REGISTRY}
-            export ECR_REPOSITORY=${ECR_REPOSITORY}
-            export IMAGE_TAG=${IMAGE_TAG}
-
-            echo "Logging in to ECR...."
-            aws ecr get-login-password --region $AWS_REGION | sudo docker login --username AWS --password-stdin 817722091681.dkr.ecr.af-south-1.amazonaws.com
-            echo "Logged in successful..."
-            echo "Pulling  image from ECR..."
-            echo $($ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG)
-            echo "Docker pull command: sudo docker pull \"${{ secrets.AWS_REGISTRY_URL }}/${{ secrets.REPOSITORY_NAME }}:${{ IMAGE_TAG }}\""
-            echo "Docker pull completed..."
+      
         
             
             
