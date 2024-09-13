@@ -52,9 +52,9 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           envs: |
             TAG=${{ steps.get-commit-hash.outputs.commit-hash }}-${{ steps.get-timestamp.outputs.timestamp }}
-            AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
-            AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            AWS_REGION=af-south-1
+            AWS_ACCESS_KEY_ID=${{secrets.AWS_ACCESS_KEY_ID}}
+            AWS_SECRET_ACCESS_KEY=${{secrets.AWS_SECRET_ACCESS_KEY}}
+            AWS_REGION=us-east-1
           script: |                      
             
             echo "AWS credentials set...."
@@ -72,9 +72,9 @@ jobs:
             sudo docker rm container_name || true
             
             echo "Logging in to ECR...."
-            aws configure                                                
-            $password = aws ecr get-login --region us-east-1
-            docker login --username AWS --password $password 445567104363.dkr.ecr.us-west-1.amazonaws.com/wd-app
+            aws configure                                                            
+            $password = aws ecr get-login-password --region us-east-1 | 
+            docker login --username AWS --password-stdin 445567104363.dkr.ecr.us-west-1.amazonaws.com/wd-app                        
             echo "Logged in successful..."
         
             
