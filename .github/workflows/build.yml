@@ -70,7 +70,9 @@ jobs:
             echo "Remove the previous container..."
             sudo docker rm container_name || true
             
-      
+            echo "Logging in to ECR...."
+            aws ecr get-login-password --region $AWS_REGION 
+            echo "Logged in successful..."
         
             
             
