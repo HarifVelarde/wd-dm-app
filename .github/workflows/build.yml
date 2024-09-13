@@ -57,8 +57,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           envs: PRIVATE_SSH_KEY, ECR_REPOSITORY, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
           script: |                                                
-            sudo apt update            
-            sudo apt install docker.io -y
+            sudo apt update                        
             sudo apt install awscli -y
             
             echo "AWS CLI version: $(aws --version)"
