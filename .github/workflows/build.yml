@@ -45,16 +45,17 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: SSH into EC2 instance and deploy
-        uses: easingthemes/ssh-deploy@v5.0.0
+        uses: appleboy/ssh-action@master
         with:
-          ARGS: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          TARGET: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          SOURCE: ${{ secrets.REPO_NAME }}
-          REMOTE_HOST: ${{ secrets.EC2_HOST }}
-          REMOTE_USER: ${{ secrets.EC2_USER }}
-          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          REMOTE_PORT: ${{ steps.get-commit-hash.outputs.commit-hash }}-${{ steps.get-timestamp.outputs.timestamp }}
-          SCRIPT_AFTER: |                      
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          envs: |
+            TAG=${{ steps.get-commit-hash.outputs.commit-hash }}-${{ steps.get-timestamp.outputs.timestamp }}
+            AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            AWS_REGION=af-south-1
+          script: |                      
             
             echo "AWS credentials set...."
             export AWS_ACCESS_KEY_ID=${ARGS}
@@ -72,7 +73,7 @@ jobs:
             
             echo "Logging in to ECR...."
             aws configure                                    
-            aws get-login --no-include-email --region us-east-1
+            sudo docker login -u AWS -p $(aws ecr get-login-password --region us-west-1) 445567104363.dkr.ecr.us-west-1.amazonaws.com/wd-app
             echo "Logged in successful..."
         
             
