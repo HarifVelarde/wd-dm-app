@@ -44,6 +44,9 @@ jobs:
           REMOTE_USER: ${{ secrets.EC2_USER }}
           SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           TAG: ${TAG}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.REPO_NAME }}
+          IMAGE_TAG: ${{ steps.get-commit-hash.outputs.commit-hash }}-${{ steps.get-timestamp.outputs.timestamp }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: us-west-1
@@ -52,9 +55,9 @@ jobs:
             echo "AWS CLI version: $(aws --version)"
             echo "Docker version: $(sudo docker --version)"
             echo "Stop the current running container if exist..."
-            sudo docker stop container_name || true
+            sudo docker stop $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG || true
             echo "Remove the previous container..."
-            sudo docker rm container_name || true
+            sudo docker rm $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG || true
             echo "AWS credentials set...."
             export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
             export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
