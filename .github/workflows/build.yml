@@ -9,7 +9,9 @@ jobs:
       TAG: ${{ github.sha }}
       PRIVATE_SSH_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
       ECR_REPOSITORY: ${{ secrets.REPO_NAME }}
-
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: us-west-1
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -53,16 +55,19 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          envs: PRIVATE_SSH_KEY, ECR_REPOSITORY
+          envs: PRIVATE_SSH_KEY, ECR_REPOSITORY, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
           script: |                                                
-            echo "AWS credentials set...."
-            export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-            export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-            export AWS_REGION=${AWS_REGION}
-    
+            sudo apt update            
+            sudo apt install docker.io -y
+            sudo apt install awscli -y
+            
+            echo "AWS CLI version: $(aws --version)"
+            echo "Docker version: $(sudo docker --version)"
+            
             echo "Logging in to ECR...."
-            aws ecr get-login-password --region $AWS_REGION | sudo docker login --username AWS --password-stdin 817722091681.dkr.ecr.af-south-1.amazonaws.com
+            sudo $(aws ecr get-login --no-include-email --region us-west-1);
             echo "Logged in successful..."
+            
 
             
       
