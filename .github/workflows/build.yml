@@ -45,24 +45,21 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: SSH into EC2 instance and deploy
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: ${{ secrets.REPO_NAME }}
-          IMAGE_TAG: ${{ steps.get-commit-hash.outputs.commit-hash }}-${{ steps.get-timestamp.outputs.timestamp }}
-          AWS_REGION: us-west-1
-        uses: appleboy/ssh-action@master
+        uses: easingthemes/ssh-deploy@v5.0.0
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          envs: PRIVATE_SSH_KEY, ECR_REPOSITORY, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
-          script: |                                                
-            
+          REMOTE_HOST: ${{ secrets.EC2_HOST }}
+          REMOTE_USER: ${{ secrets.EC2_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          SCRIPT_AFTER: |
+            ./script
             echo "AWS CLI version: $(aws --version)"
             echo "Docker version: $(sudo docker --version)"
-          
             
-
+            echo "Stop the current running container if exist..."
+            docker stop container_name || true
+    
+            echo "Remove the previous container..."
+            docker rm container_name || true
             
       
         
