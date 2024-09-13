@@ -57,15 +57,10 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           envs: PRIVATE_SSH_KEY, ECR_REPOSITORY, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
           script: |                                                
-            sudo apt update                        
-            sudo apt install awscli -y
             
             echo "AWS CLI version: $(aws --version)"
             echo "Docker version: $(sudo docker --version)"
-            
-            echo "Logging in to ECR...."
-            sudo $(aws ecr get-login --no-include-email --region us-west-1);
-            echo "Logged in successful..."
+          
             
 
             
