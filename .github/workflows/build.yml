@@ -37,8 +37,8 @@ jobs:
           ECR_REPOSITORY: ${{ secrets.REPO_NAME }}
           #IMAGE_TAG: ${{ steps.get-commit-hash.outputs.commit-hash }}-${{ steps.get-timestamp.outputs.timestamp }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$TAG
+          docker build -t $ECR_REGISTRY-$ECR_REPOSITORY:latest .
+          docker push $ECR_REGISTRY-$ECR_REPOSITORY:latest
       - name: SSH into EC2 instance and deploy
         uses: easingthemes/ssh-deploy@v5.0.0
         with:
@@ -50,11 +50,10 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{secrets.AWS_REGION}}
-          TAG: ${{env.TAG}}
           SCRIPT_AFTER: |            
             echo "AWS CLI version: $(aws --version)"
             echo "Docker version: $(sudo docker --version)"
-            echo "Stop the current running container if exist...${TAG}"
+            echo "Stop the current running container if exist..."
             
       
         
