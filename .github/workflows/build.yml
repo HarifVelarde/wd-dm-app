@@ -41,12 +41,12 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           envs: |
-            TAG= ${{ env.TAG }}
+            TAG=${{ env.TAG }}
             AWS_ACCESS_KEY_ID=${{secrets.AWS_ACCESS_KEY_ID}}
             AWS_SECRET_ACCESS_KEY=${{secrets.AWS_SECRET_ACCESS_KEY}}
             AWS_REGION=us-east-1
             AWS_REGISTRY_URL=${{secrets.AWS_REGISTRY_URL}}
-            REPOSITORY_NAME=${{secrets.REPOSITORY_NAME}}
+            REPOSITORY_NAME=${{secrets.REPO_NAME}}
             EXPOSED_PORT=${{secrets.EXPOSED_PORT}}
             APPLICATION_PORT=${{secrets.APPLICATION_PORT}}
           script: |                      
@@ -54,9 +54,7 @@ jobs:
             echo "AWS credentials set...."
             export AWS_ACCESS_KEY_ID=${ARGS}
             export AWS_SECRET_ACCESS_KEY=${TARGET}
-            export AWS_REGION=${AWS_REGION}
-            export AWS_REGISTRY_URL=${AWS_REGISTRY_URL}
-            export REPOSITORY_NAME=${REPOSITORY_NAME}
+            export AWS_REGION=${AWS_REGION}            
             export EXPOSED_PORT=${EXPOSED_PORT}
             export APPLICATION_PORT=${APPLICATION_PORT}
             
@@ -71,17 +69,14 @@ jobs:
             
             echo "Logging in to ECR...."
             sudo aws configure                                                                                   
-            sudo aws ecr get-login-password --region us-west-1 | sudo docker login --username AWS --password-stdin 445567104363.dkr.ecr.us-west-1.amazonaws.com
+            sudo aws ecr get-login-password --region us-west-1 | sudo docker login --username AWS --password-stdin 445567104363.dkr.ecr.us-west-1.amazonaws.com          
             
             echo "AWS_REGISTRY_URL: ${{ env.AWS_REGISTRY_URL }}"
-            echo "REPOSITORY_NAME: ${{ env.REPOSITORY_NAME }}"
-            
-            echo "TAG: ${{ env.AWS_REGISTRY_URL }}"
-            echo "TAG: ${{ env.REPOSITORY_NAME }}"
+            echo "REPOSITORY_NAME: ${{ env.REPO_NAME }}"
             echo "TAG: ${{ env.TAG }}"
             
             echo "Pulling  image from ECR..."
-            sudo docker pull ${{ env.AWS_REGISTRY_URL }}/${{ env.REPOSITORY_NAME }}:${{ env.TAG }}
+            sudo docker pull ${{ env.AWS_REGISTRY_URL }}/${{ env.REPO_NAME }}:${{ env.TAG }}
             
             echo "Running the container..."
             sudo docker run -d \
