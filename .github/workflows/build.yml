@@ -76,7 +76,7 @@ jobs:
             sudo aws ecr get-login-password --region us-west-1 | sudo docker login --username AWS --password-stdin 445567104363.dkr.ecr.us-west-1.amazonaws.com            
             
             echo "Pulling  image from ECR..."
-            sudo docker pull ${{ secrets.AWS_REGISTRY_URL }}/${{ secrets.REPOSITORY_NAME }}:${{ env.TAG }}
+            sudo docker pull 445567104363.dkr.ecr.us-west-1.amazonaws.com/wd-app:290333b-2024-09-15-02-42
             
             
         
