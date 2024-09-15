@@ -70,3 +70,11 @@ jobs:
             echo "Logging in to ECR...."
             sudo aws configure                                                                                   
             sudo aws ecr get-login-password --region us-west-1 | sudo docker login --username AWS --password-stdin 445567104363.dkr.ecr.us-west-1.amazonaws.com
+            
+            echo "REGISTRY_URL: ${{ env.REGISTRY_URL }}"
+            echo "REPO_NAME: ${{ env.REPO_NAME }}"
+            echo "TAG: ${{ env.TAG }}"
+            
+            echo "Pulling  image from ECR..."
+            sudo docker pull ${{ env.REGISTRY_URL }}/${{ env.REPO_NAME }}:${{ env.TAG }}
+            
