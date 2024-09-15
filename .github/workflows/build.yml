@@ -76,5 +76,5 @@ jobs:
             echo "TAG: ${{ env.TAG }}"
             
             echo "Pulling  image from ECR..."
-            sudo docker pull ${{ env.REGISTRY_URL }}/${{ env.REPO_NAME }}:${{ env.TAG }}
+            sudo docker pull 445567104363.dkr.ecr.us-west-1.amazonaws.com/wd-app:fc42015f8182ed1bd6338cf15f21066d48955500
             
