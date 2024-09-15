@@ -7,9 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TAG: ${{ github.sha }}
-      REGISTRY_URL: ${{secrets.AWS_REGISTRY_URL}}
-      REPO_NAME: ${{secrets.REPO_NAME}}
-
+      PRIVATE_SSH_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+      ECR_REPOSITORY: ${{ secrets.REPO_NAME }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: us-west-1
     steps:
       - name: Checkout
@@ -26,16 +27,22 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Get commit hash
+        id: get-commit-hash
+        run: echo "::set-output name=commit-hash::$(git rev-parse --short HEAD)"
+      - name: Get timestamp
+        id: get-timestamp
+        run: echo "::set-output name=timestamp::$(date +'%Y-%m-%d-%H-%M')"
+
       - name: Build, tag, and push the image to Amazon ECR
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.REPO_NAME }}
-          TAG: ${{ env.TAG }}
-        run: |          
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$TAG
-
+          IMAGE_TAG: ${{ steps.get-commit-hash.outputs.commit-hash }}-${{ steps.get-timestamp.outputs.timestamp }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
       - name: SSH into EC2 instance and deploy
         uses: appleboy/ssh-action@master
         with:
@@ -43,41 +50,27 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           envs: |
-            TAG=${{ env.TAG }}
-            REGISTRY_URL=${{env.REGISTRY_URL}}
-            REPO_NAME=${{env.REPO_NAME}}
+            TAG=${{ steps.get-commit-hash.outputs.commit-hash }}-${{ steps.get-timestamp.outputs.timestamp }}
             AWS_ACCESS_KEY_ID=${{secrets.AWS_ACCESS_KEY_ID}}
-            AWS_SECRET_ACCESS_KEY=${{secrets.AWS_SECRET_ACCESS_KEY}}                        
-            EXPOSED_PORT=${{secrets.EXPOSED_PORT}}
-            APPLICATION_PORT=${{secrets.APPLICATION_PORT}}
+            AWS_SECRET_ACCESS_KEY=${{secrets.AWS_SECRET_ACCESS_KEY}}
+            AWS_REGION=us-east-1
           script: |                      
             
             echo "AWS credentials set...."
             export AWS_ACCESS_KEY_ID=${ARGS}
             export AWS_SECRET_ACCESS_KEY=${TARGET}
-            export AWS_REGION=${AWS_REGION}            
-            export EXPOSED_PORT=${EXPOSED_PORT}
-            export APPLICATION_PORT=${APPLICATION_PORT}
+            export AWS_REGION=${AWS_REGION}
             
             echo "AWS CLI version: $(aws --version)"
             echo "Docker version: $(sudo docker --version)"
+            echo "TAG: ${{ env.TAG }}"
             
             echo "Stop the current running container if exist..."
-            sudo docker stop wd-dm-app || true
+            sudo docker stop container_name || true
     
             echo "Remove the previous container..."
-            sudo docker rm wd-dm-app || true
+            sudo docker rm container_name || true
             
             echo "Logging in to ECR...."
             sudo aws configure                                                                                   
-            sudo aws ecr get-login-password --region us-west-1 | sudo docker login --username AWS --password-stdin 445567104363.dkr.ecr.us-west-1.amazonaws.com                  
-            
-            
-            
-            
-            
-            
-            
-        
-            
-            
+            sudo aws ecr get-login-password --region us-west-1 | sudo docker login --username AWS --password-stdin 445567104363.dkr.ecr.us-west-1.amazonaws.com            
