@@ -78,3 +78,7 @@ jobs:
             echo "Pulling  image from ECR..."
             sudo docker pull ${{ env.REGISTRY_URL }}/${{ env.REPO_NAME }}:${{ env.TAG }}
             
+            echo "Running the container..."
+            sudo docker run -d -p 8000:8000 ${{ env.REGISTRY_URL }}/${{ env.REPO_NAME }}:${{ env.TAG }}
+    
+            
