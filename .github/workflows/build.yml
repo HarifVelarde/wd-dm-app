@@ -82,11 +82,7 @@ jobs:
             echo "Pulling  image from ECR..."
             sudo docker pull ${{ env.REGISTRY_URL }}/${{ env.REPO_NAME }}:${{ env.TAG }}
             
-            echo "Running the container..."
-            sudo docker run -d \
-              --name wd-dm-app \
-              --env-file  /path/to/dot/env \
-              -p ${{ env.EXPOSED_PORT }}:${{ env.APPLICATION_PORT }} "${{ env.REGISTRY_URL }}/${{ env.REPO_NAME }}:${{ env.TAG }}"
+            
             
             
         
