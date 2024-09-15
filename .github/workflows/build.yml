@@ -73,13 +73,11 @@ jobs:
             
             echo "Logging in to ECR...."
             sudo aws configure                                                                                   
-            sudo aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 445567104363.dkr.ecr.us-east-1.amazonaws.com/wd-app
-            echo "Logged in successful..."
-            
-            echo "!!!!! $(cat requirements.txt)"
+            sudo aws ecr get-login-password --region us-west-1 | docker login --username AWS --password-stdin 445567104363.dkr.ecr.us-west-1.amazonaws.com/wd-app
+            echo "Logged in successful..."                        
             
             echo "Pulling  image from ECR..."
-            echo "Docker pull command: sudo docker pull \"${{ secrets.AWS_REGISTRY_URL }}/${{ secrets.REPOSITORY_NAME }}:${{ env.TAG }}\""
+            sudo docker pull \"${{ secrets.AWS_REGISTRY_URL }}/${{ secrets.REPOSITORY_NAME }}:${{ env.TAG }}\""
             echo "Docker pull completed..."
         
             
