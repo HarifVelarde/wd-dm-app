@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TAG: ${{ github.sha }}
-      REGISTRY_URL: ${{secrets.AWS_REGISTRY_URL}}
+      REGISTRY_URL: ${{secrets.REGISTRY}}
       REPO_NAME: ${{secrets.REPO_NAME}}
 
       AWS_REGION: us-west-1
@@ -76,5 +76,5 @@ jobs:
             echo "TAG: ${{ env.TAG }}"
             
             echo "Pulling  image from ECR..."
-            sudo docker pull 445567104363.dkr.ecr.us-west-1.amazonaws.com/wd-app:fc42015f8182ed1bd6338cf15f21066d48955500
+            sudo docker pull ${{ env.REGISTRY_URL }}/${{ env.REPO_NAME }}:${{ env.TAG }}
             
