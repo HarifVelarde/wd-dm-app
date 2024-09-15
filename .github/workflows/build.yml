@@ -77,16 +77,20 @@ jobs:
             
             echo "Logging in to ECR...."
             sudo aws configure                                                                                   
-            sudo aws ecr get-login-password --region us-west-1 | sudo docker login --username AWS --password-stdin 445567104363.dkr.ecr.us-west-1.amazonaws.com            
+            sudo aws ecr get-login-password --region us-west-1 | sudo docker login --username AWS --password-stdin 445567104363.dkr.ecr.us-west-1.amazonaws.com
+            
+            echo "AWS_REGISTRY_URL: ${{ env.AWS_REGISTRY_URL }}"
+            echo "REPOSITORY_NAME: ${{ env.REPOSITORY_NAME }}"
+            echo "TAG: ${{ env.TAG }}"
             
             echo "Pulling  image from ECR..."
             sudo docker pull ${{ env.AWS_REGISTRY_URL }}/${{ env.REPOSITORY_NAME }}:${{ env.TAG }}
             
             echo "Running the container..."
-            docker run -d \
+            sudo docker run -d \
               --name wd-dm-app \
               --env-file  /path/to/dot/env \
-              -p ${{ secrets.EXPOSED_PORT }}:${{ secrets.APPLICATION_PORT }} "${{ env.AWS_REGISTRY_URL }}/${{ env.REPOSITORY_NAME }}:${{ env.TAG }}"
+              -p ${{ env.EXPOSED_PORT }}:${{ env.APPLICATION_PORT }} "${{ env.AWS_REGISTRY_URL }}/${{ env.REPOSITORY_NAME }}:${{ env.TAG }}"
             
             
         
