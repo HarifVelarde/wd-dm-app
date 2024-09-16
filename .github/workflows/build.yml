@@ -62,10 +62,13 @@ jobs:
             echo "Docker version: $(sudo docker --version)"
             
             echo "Stop the current running container if exist..."
-            sudo docker stop wd-dm-app || true
+            sudo docker stop $(sudo docker ps -a -q) || true 
     
             echo "Remove the previous container..."
-            sudo docker rm wd-dm-app || true
+            $ sudo docker rm $(sudo docker ps -a -q)   || true
+            
+            echo "Remove the previous image..."
+            sudo docker image rm -f $(sudo docker image ls)
             
             echo "Logging in to ECR...."
             sudo aws configure                                                                                   
