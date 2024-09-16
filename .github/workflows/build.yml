@@ -61,7 +61,7 @@ jobs:
             echo "AWS CLI version: $(aws --version)"
             echo "Docker version: $(sudo docker --version)"
             
-            echo "Stop the current running container if exist..."
+            echo "Stop the current running container if exist...."
             sudo docker stop $(sudo docker ps -a -q) || true 
     
             echo "Remove the previous container..."
