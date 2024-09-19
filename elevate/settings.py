@@ -1,5 +1,9 @@
 
 from pathlib import Path
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -126,8 +130,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # AWS configuration
 
-AWS_ACCESS_KEY_ID = ' AKIAWPPO6OVVTL5BS44R'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_ACCESS_KEY_SECRET = os.getenv("AWS_ACCESS_KEY_SECRET")
 
 # Basic Storage configuration for Amazon S3 (Irrespective of Django versions)
 
