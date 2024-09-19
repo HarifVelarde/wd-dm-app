@@ -51,7 +51,7 @@ jobs:
             APPLICATION_PORT=${{secrets.APPLICATION_PORT}}
           script: |                      
             
-            echo "AWS credentials set...."
+            echo "AWS credentials set..."
             export AWS_ACCESS_KEY_ID=${ARGS}
             export AWS_SECRET_ACCESS_KEY=${TARGET}
             export AWS_REGION=${AWS_REGION}            
