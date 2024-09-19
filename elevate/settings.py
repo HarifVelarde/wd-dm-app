@@ -126,8 +126,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # AWS configuration
 
-AWS_ACCESS_KEY_ID = '${AWS_ACCESS_KEY_ID}'
-AWS_SECRET_ACCESS_KEY = 'F1Ny5DrHBuFeKU996eJ2pZV8x9Z2+PpfhPXWKUdD'
+AWS_ACCESS_KEY_ID = ' AKIAWPPO6OVVTL5BS44R'
+AWS_SECRET_ACCESS_KEY = '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'
 
 # Basic Storage configuration for Amazon S3 (Irrespective of Django versions)
 
